@@ -1,0 +1,4 @@
+#inPyglet.py
+
+import pyglet
+
