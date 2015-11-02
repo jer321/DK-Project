@@ -1,17 +1,18 @@
 __Author__='Juan Fernando Otoya'
-Description='''se mejoro el sistema de imagenes.
+Description='''se implementa Prototipo grafico del primer nivel.
 
-Todavia no se han implementado colisiones con el mapa.'''
-import pygame
+Todavia no se han implementado colisiones con el mapa.]
+Se implementaran variables para las condiciones de las colisiones.'''
 import pygame as pig
 from pygame.locals import *
 from Colors import *
+from Constantes import *
 
 #y=int(mx+b)
 
 
 class Player(pig.sprite.Sprite):
-	def __init__(self,img='Sprites Player\der1.png',pos=(0,10),playerSize=(54,45),vel=(4,16)):
+	def __init__(self,img='Sprites Player\der1.png',pos=(0,600),playerSize=(54,45),vel=(7,12)):
 		''
 		pig.sprite.Sprite.__init__(self)
 		self.posx,self.posy = pos
@@ -31,16 +32,14 @@ class Player(pig.sprite.Sprite):
 		self.cmd()
 		self.rect = pig.Rect(self.posx,self.posy,self.width,self.height); #print(self.rect.left,self.rect.top)
 		self.gravity()
+		self.width,self.height = self.img.get_rect().size#actualizamos el tamano de la imagen para cuando cambia de sprite
 		self.checkBordes()
-		print(self.img.get_rect().size)
 		screen.blit(self.img,(self.posx,self.posy))#Se pinta la imagen ya actualizada luego de la colision
 	def cmd(self):
 		'Los Comandos del Jugador'
 		keys = pig.key.get_pressed()#Para la clase Player
 		if keys[K_UP]:
 			self.posy-=self.yvel
-		elif keys[K_DOWN]:
-			self.posy+=self.yvel
 		if keys[K_RIGHT]:
 			self.dir='E'
 			self.img=pig.image.load('Sprites Player\der1.png')
@@ -85,45 +84,46 @@ class Player(pig.sprite.Sprite):
 			self.gravityVel=0
 		self.posy+=self.gravityVel
 
-suelosy=[]
+suelosy=pig.sprite.Group()
 
-pygame.init()
+pig.init()
 
 screenWidth=640#Utilizar de las Constantes
 screenHeight=480#Utilizar de las Constantes
 
 screensize=screenWidth,screenHeight
-screen=pygame.display.set_mode(screensize)
+screen=pig.display.set_mode(screensize)
 
-clock=pygame.time.Clock()
-
+clock=pig.time.Clock()
+pig.display.set_caption("Hola juan")#importar de Constantes
 jugador=Player()
 #__main__
 running=True
 background=pig.image.load('background.jpg').convert_alpha()
 background=pig.transform.scale(background,(screenWidth,screenHeight))
 while running:
-	for event in pygame.event.get():
+	for event in pig.event.get():
 		if event.type==QUIT or (event.type==KEYDOWN and event.key==K_ESCAPE):
 			running=False
 
 	#Fondo de Pantalla
 	screen.blit(background,(0,0))
 	#Mapa
-	pig.draw.polygon(screen,SLATE_GRAY,((0,200),(0,170),(400,200),(400,230)))
-	pig.draw.polygon(screen,BLACK,((640,200+128),(640,170+128),(200,185+128),(200,200+128)))
+	pig.draw.polygon(screen,WOOD_BROWN,((0,390),(640-80,390),(640-80,385),(0,380)))#diferencia de 90 con los pies del jugador
+	pig.draw.polygon(screen,WOOD_BROWN,((640,390-90),(80,390-90),(80,385-90),(640,380-90)))
 	#Los Dibujos
 	jugador.update()
 	#jugador.x += movex
 	#jugador.y += movey
 
 	#El tiempo transcurrido del juego mostrado en pantalla
-	tiempoTranscurrido=pygame.time.get_ticks()/1000
-	fuenteDeTexto=pygame.font.Font('freesansbold.ttf', 32)
+	tiempoTranscurrido=pig.time.get_ticks()/1000
+	fuenteDeTexto=pig.font.Font('freesansbold.ttf', 32)
 	textoPantalla=fuenteDeTexto.render(str(tiempoTranscurrido), True, GREEN, BLUE)#el True es para el Anti-Aliased (alisado)
 	screen.blit(textoPantalla, (300,0))
+	textoPantallaj=fuenteDeTexto.render('Juan Come Mocos', True, BLACK, STEEL_BLUE)#CAMBIAR!!!!!!
+	screen.blit(textoPantallaj, (0,0))
+	pig.display.update()
+	clock.tick(30)#Utilizar Constantes
 
-	pygame.display.update()
-	clock.tick(60)#Utilizar Constantes
-
-pygame.quit()
+pig.quit()

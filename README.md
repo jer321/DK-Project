@@ -1,3 +1,5 @@
 # DK-Project
 
-TEST just to look if this sht** appears
+__Author__='Juan Fernando Otoya'
+
+En este proyecto se intenta recrear el  juego de Donkey Kong con algunas cosas diferentes.

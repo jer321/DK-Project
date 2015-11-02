@@ -10,6 +10,8 @@ GRAY=190,190,190
 STEEL_BLUE=70,130,180
 SLATE_GRAY=112,138,144
 
+WOOD_BROWN=102,51,0
+
 """
 #Extra para detectar tecla undida si esta en los comandos (diccionario)
 

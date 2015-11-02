@@ -1,0 +1,17 @@
+Manual de Usuario
+
+//Deben entregar un documento donde se define el juego a implementar.
+
+El juego que se intenta recrear es Donkey Kong, aunque he escogido unas graficas diferentes para el juego.
+
+//un análisis y descripción de las reglas del juego (Elementos, relaciones e interacciones).
+
+El jugador interactua con:
+mapa: El jugador puede caminar sobre el mapa y es afectado por este, es decir que no puede traspasar zonas a las cuales no le es permitido
+mejora: Es una mejora que le permite al jugador realizar ataques para derrotar al Boss
+escaleras: Cuando el jugador esta tocando una escalera
+barriles: Si el jugador es tocado por uno de los Barriles pierde
+Boss (Donkey Kong): Del Boss salen los barriles. El objetivo del jugador es derrotar al Boss. para esto debe conseguir una mejora ubicada en el mapa
+
+
+la razon por la que he preferido utilizar pygame sobre otras librerias es porque tiene una clase especial llamada "sprite" que simplifica la interaccion entre cualquier elemento grafico añadido.
