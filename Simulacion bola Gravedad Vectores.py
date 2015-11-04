@@ -12,24 +12,25 @@ screensize=screenWidth,screenHeight
 screen=pig.display.set_mode(screensize)
 clock=pig.time.Clock()
 
-class barril(pig.sprite.Sprite):
+class barril():#pig.sprite.Sprite):
 	def __init__(self,pos,vel=[7,5],size=(32,32)):
 		''
-		pig.sprite.Sprite.__init__(self)
+		#pig.sprite.Sprite.__init__(self)
 		self.vel = vel
 		self.pos = pos
 		self.size = size
+		self.grav = 1
 
 		self.img = pig.image.load('Barrel.png').convert_alpha()
 		self.img = pig.transform.scale(self.img,self.size)
 		self.rect = pig.Rect(self.pos,self.size)
 	def update(self):
 		''
-		self.checkBordes()
-		self.vel[1]+=grav
+		self.vel[1]+=self.grav
 		self.pos[0]+=self.vel[0]
 		self.pos[1]+=self.vel[1]
 		self.rect = pig.Rect(self.pos,self.size)
+		self.checkBordes()
 		screen.blit(self.img,self.pos)
 	def checkBordes(self):
 		if self.rect.left <=0:
@@ -45,25 +46,66 @@ class barril(pig.sprite.Sprite):
 		elif self.rect.bottom>=screenHeight:
 			self.pos[1]=screenHeight-self.size[1]
 			self.vel[1]*=-.851
-		
+			self.vel[0]*=.995#Coeficiente de friccion
+
+		for coso in mapa:
+			if coso.bottom>self.rect.bottom>=coso.top and coso.right>self.pos[0]>coso.left:#Colision con top
+				self.pos[1]=coso.top-self.size[1]
+				self.vel[1]*=-.851
+			elif coso.top<self.rect.top<=coso.bottom and coso.right>self.pos[0]>coso.left:#Colision con bottom
+				self.pos[1]=coso.bottom
+				self.vel[1]*=-.851
+
+			elif coso.bottom>=self.pos[1]>=coso.top and coso.right>self.rect.right>=coso.left:#Colision con right
+				self.pos[0]=coso.left-self.size[0]
+				self.vel[0]*=-.851
+			elif coso.bottom>=self.pos[1]>=coso.top and coso.left>self.rect.left>=coso.right:#Colision con right
+				self.pos[0]=coso.right
+				self.vel[0]*=-.851
 		
 
-barriles=pig.sprite.Group()
-for x in range(1):
+#barriles=pig.sprite.Group()
+
+barriles=[]
+
+for x in range(10):
 	name='barril {0}'.format(x)
-	b=barril([random.uniform(0,640),random.uniform(0,480)],[random.uniform(0,10),random.uniform(0,10)])
-	barriles.add(b)
+	#b=barril([random.uniform(0,640),random.uniform(0,480)],[random.uniform(-10,10),random.uniform(-10,10)])
+	b=barril([random.uniform(0,640),random.uniform(0,1)],[random.uniform(-10,10),random.uniform(-10,10)])
+	barriles.append(b)
 
-print(barriles)
-grav=1
+
+mapa=[]
+dif=0
+for x in range(3):
+	if dif<640-80:
+		dif+=120
+	b=pig.Rect(random.uniform(0,300),dif,random.uniform(200,300),random.uniform(32,80))
+	mapa.append(b)
+#b=pig.Rect(0,430,640,50)
+#c=pig.Rect(screenWidth/2,screenHeight/2,80,80)
+#mapa.append(b)
+#mapa.append(c)
+print(mapa)
 running=True
 while running:
 	for event in pig.event.get():
 		if event.type==QUIT or (event.type==KEYDOWN and event.key==K_ESCAPE):
 			running=False
 	screen.fill(GRAY)
-	barriles.update()
+
+	#Update de todos los Barriles creados en el for loop de arriba
+
+	for i in mapa:
+		pig.draw.rect(screen,RED,i)
+
+	for i in barriles:
+		i.update()
+	
+
 	pig.display.update()
-	clock.tick(60)#Utilizar Constantes
+	clock.tick(15)#Utilizar Constantes
+	fps=clock.get_fps()
+	pig.display.set_caption(str(fps))
 
 pig.quit()

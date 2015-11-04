@@ -26,11 +26,11 @@ class barril(pig.sprite.Sprite):
 		self.rect = pig.Rect(self.pos,self.size)
 	def update(self):
 		''
-		self.checkBordes()
 		self.vel[1]+=grav
 		self.pos[0]+=self.vel[0]
 		self.pos[1]+=self.vel[1]
 		self.rect = pig.Rect(self.pos,self.size)
+		self.checkBordes()
 		screen.blit(self.img,self.pos)
 	def checkBordes(self):
 		if self.rect.left <=0:
@@ -45,18 +45,35 @@ class barril(pig.sprite.Sprite):
 			self.vel[1]*=-1
 		elif self.rect.bottom>=screenHeight:
 			self.pos[1]=screenHeight-self.size[1]
-			self.vel[1]*=-.851
+			self.vel[1]*=-.2851
 			#self.vel[0]*=.995#Coeficiente de friccion
+
+		for coso in mapa:
+			if coso.bottom>self.rect.bottom>=coso.top and coso.right>self.pos[0]>coso.left:#Colision con top
+				self.pos[1]=coso.top-self.size[1]
+				self.vel[1]*=-.2851
+			elif coso.top<self.rect.top<=coso.bottom and coso.right>self.pos[0]>coso.left:#Colision con bottom
+				self.pos[1]=coso.bottom
+				self.vel[1]*=-.851
+
+			elif coso.bottom>=self.pos[1]>=coso.top and coso.right>self.rect.right>=coso.left:#Colision con right
+				self.pos[0]=coso.left-self.size[0]
+				self.vel[0]*=-.851
+			elif coso.bottom>=self.pos[1]>=coso.top and coso.left>self.rect.left>=coso.right:#Colision con right
+				self.pos[0]=coso.right
+				self.vel[0]*=-.851
 		
 		
+barriles=[]
+mapa=[]
 
-barriles=pig.sprite.Group()
-#for x in range(10):
-#	name='barril {0}'.format(x)
-#	b=barril([random.uniform(0,640),random.uniform(0,480)],[random.uniform(1,10),random.uniform(1,10)])
-#	barriles.add(b)
+dif=0
+for x in range(3):
+	if dif<640-80:
+		dif+=120
+	b=pig.Rect(random.uniform(0,100),dif,random.uniform(320,640),random.uniform(40,50))
+	mapa.append(b)
 
-print(barriles)
 barrelTiming=time.time()
 grav=1
 running=True
@@ -65,17 +82,23 @@ while running:
 		if event.type==QUIT or (event.type==KEYDOWN and event.key==K_ESCAPE):
 			running=False
 	screen.fill(GRAY)
-	if time.time()>barrelTiming+.51:
+
+	if time.time()>barrelTiming+1.5:#cada 0.5 segundos genera un barril
 		#b=barril([random.uniform(0,640),random.uniform(0,480)],[random.uniform(-10,10),random.uniform(-10,10)])
-		b=barril([32,32],[random.uniform(-10,10),random.uniform(-10,10)])
-		barriles.add(b)
+		b=barril([32,32],[random.uniform(0,10),random.uniform(-10,10)])
+		barriles.append(b)
 		barrelTiming=time.time()
-	barriles.update()
+		print(barriles)
+
+	for barr in barriles:#Update de todos los barriles
+		barr.update()
+
+
+	for i in mapa:
+		pig.draw.rect(screen,RED,i)
 	screen.blit(pig.transform.scale(pig.image.load('donkeyKong2.png'),(64,64)),(0,0))
-	#for i in barriles:
-	#	i.update()
+
 	pig.display.update()
-	clock.tick(60)#Utilizar Constantes
+	clock.tick(30)#Utilizar Constantes
 
 pig.quit()
-
