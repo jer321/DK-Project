@@ -12,6 +12,8 @@ SLATE_GRAY=112,138,144
 
 WOOD_BROWN=102,51,0
 
+DARK_RED=125,44,44
+
 """
 #Extra para detectar tecla undida si esta en los comandos (diccionario)
 
