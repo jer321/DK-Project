@@ -20,6 +20,7 @@ class barril(pig.sprite.Sprite):
 		self.vel = vel
 		self.pos = pos
 		self.size = size
+		self.state = None
 
 		self.img = pig.image.load('Barrel.png').convert_alpha()
 		self.img = pig.transform.scale(self.img,self.size)
@@ -49,18 +50,25 @@ class barril(pig.sprite.Sprite):
 			#self.vel[0]*=.995#Coeficiente de friccion
 
 		for coso in mapa:
-			if coso.bottom>self.rect.bottom>=coso.top and coso.right>self.pos[0]>coso.left:#Colision con top
-				self.pos[1]=coso.top-self.size[1]
-				self.vel[1]*=-.2851
-			elif coso.top<self.rect.top<=coso.bottom and coso.right>self.pos[0]>coso.left:#Colision con bottom
-				self.pos[1]=coso.bottom
-				self.vel[1]*=-.851
 
-			elif coso.bottom>=self.pos[1]>=coso.top and coso.right>self.rect.right>=coso.left:#Colision con right
-				self.pos[0]=coso.left-self.size[0]
-				self.vel[0]*=-.851
-			elif coso.bottom>=self.pos[1]>=coso.top and coso.left>self.rect.left>=coso.right:#Colision con right
+			if coso.bottom>self.rect.bottom>=coso.top and coso.right>self.rect.centerx>coso.left:#Colision con top
+				self.pos[1]=coso.top-self.size[1]
+				self.vel[1]*=-.4851#Rebote
+				if time.time()>barrelTiming+1.5:
+					self.vel[0]*=.14851#Friccion
+
+			#elif coso.top<self.rect.top<=coso.bottom and coso.right>self.pos[0]>coso.left:#Colision con bottom
+			#	self.pos[1]=coso.bottom
+			#	self.vel[1]*=-.851
+
+			elif (coso.bottom>=self.rect.top>=coso.top or coso.bottom+10>=self.rect.bottom>=coso.top)\
+			 and coso.centerx>self.rect.left>=coso.right:#Colision con right
 				self.pos[0]=coso.right
+				self.vel[0]*=-.851
+
+			elif (coso.bottom>=self.rect.top>=coso.top or coso.bottom>=self.rect.bottom>=coso.top+10)\
+			 and coso.centerx>self.rect.right>coso.left:#Colision con left
+				self.pos[0]=coso.left-self.size[0]
 				self.vel[0]*=-.851
 		
 		
@@ -72,7 +80,22 @@ for x in range(3):
 	if dif<640-80:
 		dif+=120
 	b=pig.Rect(random.uniform(0,100),dif,random.uniform(320,640),random.uniform(40,50))
-	mapa.append(b)
+	#mapa.append(b)
+
+b=pig.Rect(0,100,160,20)
+mapa.append(b)
+b=pig.Rect(190,110,150,20)
+mapa.append(b)
+b=pig.Rect(380,120,150,20)
+mapa.append(b)
+
+b=pig.Rect(480,220,160,20)
+mapa.append(b)
+b=pig.Rect(480-200,220+20,160,20)
+mapa.append(b)
+b=pig.Rect(480-400,220+40,160,20)
+mapa.append(b)
+
 
 barrelTiming=time.time()
 grav=1
@@ -85,13 +108,16 @@ while running:
 
 	if time.time()>barrelTiming+1.5:#cada 0.5 segundos genera un barril
 		#b=barril([random.uniform(0,640),random.uniform(0,480)],[random.uniform(-10,10),random.uniform(-10,10)])
-		b=barril([32,32],[random.uniform(0,10),random.uniform(-10,10)])
+		b=barril([32,32],[random.uniform(3,15),random.uniform(-10,10)])
 		barriles.append(b)
 		barrelTiming=time.time()
 		print(barriles)
 
-	for barr in barriles:#Update de todos los barriles
-		barr.update()
+	for barr in range(len(barriles)-1):#Update de todos los barriles
+	'se Cambio el loop for, para poder quitar los barriles cuando lleguen al borde de la pantalla'
+		barriles[barr].update()
+		if barriles[barr].rect.right>=screenWidth and barriles[barr].rect.bottom>=screenHeight:
+			barriles.pop(barr)
 
 
 	for i in mapa:

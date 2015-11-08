@@ -8,10 +8,8 @@ from pygame.locals import *
 from Colors import *
 from Constantes import *
 
-
-
 class Player(pig.sprite.Sprite):
-	def __init__(self,img='Sprites Player\der1.png',pos=(10,600),playerSize=(54,45),vel=(7,12)):
+	def __init__(self,img='Character\der1.png',pos=(10,600),playerSize=(64,64),vel=(7,12)):
 		''
 		pig.sprite.Sprite.__init__(self)
 		self.posx,self.posy = pos
@@ -23,18 +21,17 @@ class Player(pig.sprite.Sprite):
 		self.keys = pig.key.get_pressed()
 		self.dir = 'E'#Direccion del personaje
 
-		self.img = pig.image.load(img)
-		self.img = pig.transform.scale(self.img,playerSize)
+		self.img = None
 		self.rect = pig.Rect(self.posx, self.posy, self.width, self.height)
 
 	def update(self):
 		''
 		self.cmd()
+		self.loadImg()
 		self.gravity()
 		self.rect = pig.Rect(self.posx,self.posy,self.width,self.height); #print(self.rect.left,self.rect.top)
 		self.width,self.height = self.img.get_rect().size#actualizamos el tamano de la imagen para cuando cambia de sprite
 		self.checkBordes()
-		self.loadImg()
 		screen.blit(self.img,(self.posx,self.posy))#Se pinta la imagen ya actualizada luego de la colision
 	def cmd(self):
 		'Los Comandos del Jugador'
@@ -47,31 +44,31 @@ class Player(pig.sprite.Sprite):
 
 		if self.keys[K_RIGHT]:
 			self.dir='E'
-			self.img=pig.image.load('Sprites Player\der1.png')
 			self.posx+=self.xvel
 		elif self.keys[K_LEFT]:
 			self.dir='W'
-			self.img=pig.image.load('Sprites Player\izq1.png')
 			self.posx-=self.xvel
 
 	def loadImg(self):
-		if self.dir=='E' and self.onAir:
-			if self.gravityVel>abs(self.yvel):# or not self.keys[K_UP]:
-				self.img=pig.image.load('Sprites Player\derJD.png')
-			else:
-				self.img=pig.image.load('Sprites Player\derJU.png')
-		elif self.dir=='W' and self.onAir:
-			if self.gravityVel>abs(self.yvel):# or not self.keys[K_UP]:
-				self.img=pig.image.load('Sprites Player\izqJD.png')
-			else:
-				self.img=pig.image.load('Sprites Player\izqJU.png')
+		if self.onAir:
+			if self.dir=='E':
+				if self.gravityVel>abs(self.yvel):
+					pass#self.img=pig.image.load('Sprites Player\derJD.png')
+				else:
+					self.img=pig.image.load('Character\c2\derJU.png')
+			elif self.dir=='W':
+				if self.gravityVel>abs(self.yvel):
+					pass#self.img=pig.image.load('Sprites Player\izqJD.png')
+				else:
+					self.img=pig.image.load('Character\c2\izqJU.png')
 
 		else:
 			if self.dir=='E':
-				self.img=pig.image.load('Sprites Player\der1.png')
+				self.img=pig.image.load('Character\c2\der1.png')
 			elif self.dir=='W':
-				self.img=pig.image.load('Sprites Player\izq1.png')
-
+				self.img=pig.image.load('Character\c2\izq1.png')
+		self.img=pig.transform.scale(self.img,(45,62))#Se Normaliza el tamano de la imagen escogida
+		
 	def checkBordes(self):
 		'Detecta la colision con los bordes y actualiza la posicion del Player para que no sobrepase los bordes'
 		if self.rect.top<0:#Borde superior de la pantalla
@@ -87,6 +84,14 @@ class Player(pig.sprite.Sprite):
 			self.posx=0
 		elif self.rect.right>SCREEN_SIZE[0]:#Borde derecho de la pantalla
 			self.posx=SCREEN_SIZE[0]-self.width
+
+
+		for i in range(len(dimmapa)-1): #f(x)=m(posx-x)+y
+			y=pendientes[i]*(self.posx-dimmapa[i][0])+dimmapa[i][1]
+			if self.rect.bottom>y and self.rect.bottom<y+10:
+				self.posy=y-self.height
+				self.onAir=False
+		print(self.onAir)
 
 		self.rect=pig.Rect(self.posx,self.posy,self.width,self.height)#Actualizamos las posiciones del personaje
 	def checkMapCollision(self):
@@ -110,8 +115,24 @@ pig.display.set_caption(CAPTION)#importar de Constantes
 jugador=Player()
 #__main__
 running=True
-background=pig.image.load('background.jpg').convert_alpha()#utilizar Constantes
+background=pig.image.load('background.png').convert_alpha()#utilizar Constantes
 background=pig.transform.scale(background,(SCREEN_SIZE[0],SCREEN_SIZE[1]))
+
+difaltura=int(SCREEN_SIZE[1]/7)
+#X0,  y0,        x1,          y1
+dimmapa=\
+(0,difaltura,SCREEN_SIZE[0],difaltura-30),\
+(0,difaltura*3,SCREEN_SIZE[0],difaltura*3-30),\
+(0,difaltura*5,SCREEN_SIZE[0],difaltura*5-30),\
+(0,difaltura*6+40,SCREEN_SIZE[0],difaltura*6-30)
+
+pendientes=[]
+for i in dimmapa:
+	'Saca las pendientes de todos los obstaculos del mapa'
+	m=(i[3]-i[1])/(i[2]-i[0])#La pendiente. en dimmapa se dan todos los puntos del mapa
+	pendientes.append(m)
+print(pendientes)
+
 while running:
 	for event in pig.event.get():
 		if event.type==QUIT or (event.type==KEYDOWN and event.key==K_ESCAPE):
@@ -121,8 +142,9 @@ while running:
 	screen.blit(background,(0,0))
 
 	#Mapa
-	pig.draw.polygon(screen,WOOD_BROWN,((0,390),(640-80,390),(640-80,385),(0,380)))#diferencia de 90 con los pies del jugador
-	pig.draw.polygon(screen,WOOD_BROWN,((640,390-90),(80,390-90),(80,385-90),(640,380-90)))
+	for plataforma in dimmapa:
+		pig.draw.polygon(screen,DARK_RED,((plataforma[0],plataforma[1]),(plataforma[2],plataforma[3]),\
+			(plataforma[2],plataforma[3]+10),(plataforma[0],plataforma[1]+10)))
 	
 	#Los Dibujos
 	jugador.update()
