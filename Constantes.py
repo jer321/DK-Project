@@ -1,7 +1,8 @@
 __Autor__ = "Juan Fernando Otoya"
 
 #Fuerzas en el Jugador(playes)
-WALKVEL=7
+WALK_VEL=7
+JUMP_VEL = -10
 
 WALK_ACCEL = 0.15
 RUN_ACCEL = .21
@@ -9,9 +10,8 @@ SMALL_TURNAROUND = .35
 
 GRAVITY = 1.01
 JUMP_GRAVITY = .31
-JUMP_VEL = -10
 FAST_JUMP_VEL = -12.5
-MAX_Y_VEL = 11
+MAX_Y_VEL = 10
 
 MAX_RUN_SPEED = 8
 MAX_WALK_SPEED = 6

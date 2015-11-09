@@ -25,6 +25,8 @@ class barril(pig.sprite.Sprite):
 		self.img = pig.image.load('Barrel.png').convert_alpha()
 		self.img = pig.transform.scale(self.img,self.size)
 		self.rect = pig.Rect(self.pos,self.size)
+
+		self.alive = True#Estado del barril para cuando sean destruidos no se muestren
 	def update(self):
 		''
 		self.vel[1]+=grav
@@ -32,7 +34,8 @@ class barril(pig.sprite.Sprite):
 		self.pos[1]+=self.vel[1]
 		self.rect = pig.Rect(self.pos,self.size)
 		self.checkBordes()
-		screen.blit(self.img,self.pos)
+		if self.alive:
+			screen.blit(self.img,self.pos)
 	def checkBordes(self):
 		if self.rect.left <=0:
 			self.pos[0]=0
@@ -113,11 +116,10 @@ while running:
 		barrelTiming=time.time()
 		print(barriles)
 
-	for barr in range(len(barriles)-1):#Update de todos los barriles
-	'se Cambio el loop for, para poder quitar los barriles cuando lleguen al borde de la pantalla'
-		barriles[barr].update()
-		if barriles[barr].rect.right>=screenWidth and barriles[barr].rect.bottom>=screenHeight:
-			barriles.pop(barr)
+	for barr in barriles:#Update de todos los barriles
+		barr.update()
+		if barr.rect.right>=screenWidth and barr.rect.bottom>=screenHeight:
+			barr.alive=False
 
 
 	for i in mapa:
