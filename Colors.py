@@ -17,7 +17,6 @@ DARK_RED=125,44,44
 """
 #Extra para detectar tecla undida si esta en los comandos (diccionario)
 
-
 	key=pygame.key.get_pressed()
 	for tecla in cmd:#Checkea cada uno de los comandos en para ver si estan siendo oprimidos
 		if key[tecla]:#Si el comando esta siendo oprimido

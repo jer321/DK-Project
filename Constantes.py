@@ -2,19 +2,17 @@ __Autor__ = "Juan Fernando Otoya"
 
 #Fuerzas en el Jugador(playes)
 WALK_VEL=7
+GRAVITY = 1.01
 JUMP_VEL = -10
+FAST_JUMP_VEL = -12.5
+
+MAX_Y_VEL = 10
+MAX_RUN_SPEED = 8
+MAX_WALK_SPEED = 6
 
 WALK_ACCEL = 0.15
 RUN_ACCEL = .21
 SMALL_TURNAROUND = .35
-
-GRAVITY = 1.01
-JUMP_GRAVITY = .31
-FAST_JUMP_VEL = -12.5
-MAX_Y_VEL = 10
-
-MAX_RUN_SPEED = 8
-MAX_WALK_SPEED = 6
 
 #Estados del Jugador(player)
 STAND = 'standing'
@@ -53,7 +51,7 @@ PLAYER_DEATH = 'player death'
 
 #Display
 CAPTION = "Donkey Kong by Guaberx(Juan Fernando Otoya)"
-SCREEN_SIZE = 768,700#800,580
+SCREEN_SIZE = 1280,680#768,700#800,580
 
 #Estados de todo el Juego
 MAIN_MENU = 'main menu'
