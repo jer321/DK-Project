@@ -150,11 +150,11 @@ while running:
 	screen.blit(background,(0,0))
 
 	#Mapa
-	mapRender(dimmapa)
+	mapRender(mapa2)
 	#Escalera
 	pig.draw.rect(screen,GREEN,(70,SCREEN_SIZE[1]-80,40,80))
 	#Los Dibujos
-	jugador2.update(dimmapa)#Adentro se pone el mapa para las colisiones
+	jugador2.update(mapa2)#Adentro se pone el mapa para las colisiones
 
 	#El tiempo transcurrido del juego mostrado en pantalla
 	tiempoTranscurrido=pig.time.get_ticks()/1000

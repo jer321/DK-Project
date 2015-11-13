@@ -25,14 +25,4 @@ mapa2=\
 (0,heightdif*5,350,heightdif*5),\
 (widthdif*3,heightdif*3,widthdif*7,heightdif*4),\
 (0,heightdif*4,widthdif*3,heightdif*4),\
-(0,heightdif*2,SCREEN_SIZE[0],heightdif*2),\
-
-#pendientes=[]
-#for i in dimmapa:
-#	'Saca las pendientes de todos los obstaculos del mapa'
-#	try:
-#		m=(i[3]-i[1])/(i[2]-i[0])#La pendiente. en dimmapa se dan todos los puntos del mapa
-#	except ZeroDivisionError:
-#		m=0
-#	pendientes.append(m)
-#print(pendientes)
+(0,heightdif*2,SCREEN_SIZE[0]-500,heightdif*2),\

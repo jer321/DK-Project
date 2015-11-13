@@ -3,14 +3,15 @@ __Author__='Juan Fernando Otoya'
 import pygame as pig
 from pygame.locals import *
 import random
+from Constantes import *
+from Mapa import *
 from Colors import *
 import time
 
 pig.init()
-screenWidth=640#Utilizar de las Constantes
-screenHeight=480#Utilizar de las Constantes
-screensize=screenWidth,screenHeight
-screen=pig.display.set_mode(screensize)
+screenWidth=SCREEN_SIZE[0]#Utilizar de las Constantes
+screenHeight=SCREEN_SIZE[1]#Utilizar de las Constantes
+screen=pig.display.set_mode(SCREEN_SIZE)
 clock=pig.time.Clock()
 
 class barril(pig.sprite.Sprite):
@@ -73,32 +74,65 @@ class barril(pig.sprite.Sprite):
 			 and coso.centerx>self.rect.right>coso.left:#Colision con left
 				self.pos[0]=coso.left-self.size[0]
 				self.vel[0]*=-.851
-		
+
+class barril():
+	def __init__(self,pos=(0,0),vel=5,size=(32,32)):
+		''
+		self.rect=pig.Rect(pos,size)
+		self.vel=vel
+		self.gravity=GRAVITY
+		self.gravityvel=0
+		self.img = pig.image.load('Barrel.png').convert_alpha()
+		self.img = pig.transform.scale(self.img,size)
+	def mover(self):
+		''
+		self.rect.centerx+=self.vel
+
+	def colisiones(self,mapa):
+		''
+		if self.rect.left<0:
+			self.rect.left=0
+			self.vel*=-1
+
+		elif self.rect.right>SCREEN_SIZE[0]:
+			self.rect.right=SCREEN_SIZE[0]
+			self.vel*=-1
+
+		for i in mapa:
+			pendiente=(i[3]-i[1])/(i[2]-i[0])
+			y=pendiente*(self.rect.centerx-i[0])+i[1]
+			if y+12>self.rect.bottom>=y and i[2]+2>self.rect.centerx>i[0]-2:#+2 para que no valla traspasar bloques
+				self.rect.bottom=y
+				self.onAir=False
+				return None
+		self.onAir=True
+
+	def gravedad(self):
+		''
+		if self.onAir:
+			if self.gravityvel>MAX_Y_VEL:
+				self.gravityvel=MAX_Y_VEL
+			else:
+				self.gravityvel+=self.gravity
+			self.rect.centery+=self.gravityvel
+			return None
+		self.gravityvel=0
+
+	def update(self,mapa):
+		''
+		self.mover()
+		self.colisiones(mapa)
+		self.gravedad()
+		screen.blit(self.img,(self.rect.left,self.rect.top))
+
+def mapRender(mapa):
+	'renderiza el mapa en la pantalla'
+	for plataforma in mapa:
+		pig.draw.polygon(screen,DARK_RED,((plataforma[0],plataforma[1]),(plataforma[2],plataforma[3]),\
+			(plataforma[2],plataforma[3]+10),(plataforma[0],plataforma[1]+10)))	
 		
 barriles=[]
-mapa=[]
-
 dif=0
-for x in range(3):
-	if dif<640-80:
-		dif+=120
-	b=pig.Rect(random.uniform(0,100),dif,random.uniform(320,640),random.uniform(40,50))
-	#mapa.append(b)
-
-b=pig.Rect(0,100,160,20)
-mapa.append(b)
-b=pig.Rect(190,110,150,20)
-mapa.append(b)
-b=pig.Rect(380,120,150,20)
-mapa.append(b)
-
-b=pig.Rect(480,220,160,20)
-mapa.append(b)
-b=pig.Rect(480-200,220+20,160,20)
-mapa.append(b)
-b=pig.Rect(480-400,220+40,160,20)
-mapa.append(b)
-
 
 barrelTiming=time.time()
 grav=1
@@ -111,19 +145,17 @@ while running:
 
 	if time.time()>barrelTiming+1.5:#cada 0.5 segundos genera un barril
 		#b=barril([random.uniform(0,640),random.uniform(0,480)],[random.uniform(-10,10),random.uniform(-10,10)])
-		b=barril([32,32],[random.uniform(3,15),random.uniform(-10,10)])
+		b=barril([32,32],random.uniform(3,15))
 		barriles.append(b)
 		barrelTiming=time.time()
 		print(barriles)
 
 	for barr in barriles:#Update de todos los barriles
-		barr.update()
+		barr.update(mapa2)
 		if barr.rect.right>=screenWidth and barr.rect.bottom>=screenHeight:
 			barr.alive=False
 
-
-	for i in mapa:
-		pig.draw.rect(screen,RED,i)
+	mapRender(mapa2)
 	screen.blit(pig.transform.scale(pig.image.load('donkeyKong2.png'),(64,64)),(0,0))
 
 	pig.display.update()
