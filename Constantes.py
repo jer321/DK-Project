@@ -51,7 +51,7 @@ PLAYER_DEATH = 'player death'
 
 #Display
 CAPTION = "Donkey Kong by Guaberx(Juan Fernando Otoya)"
-SCREEN_SIZE = 1280,680#768,700#800,580
+SCREEN_SIZE = 960,640-10
 
 #Estados de todo el Juego
 MAIN_MENU = 'main menu'

@@ -4,7 +4,7 @@ import pygame as pig
 from pygame.locals import *
 import random
 from Constantes import *
-from Mapa import *
+from Mapas import *
 from Colors import *
 import time
 
@@ -14,7 +14,7 @@ screenHeight=SCREEN_SIZE[1]#Utilizar de las Constantes
 screen=pig.display.set_mode(SCREEN_SIZE)
 clock=pig.time.Clock()
 
-class barril(pig.sprite.Sprite):
+class barril1(pig.sprite.Sprite):
 	def __init__(self,pos,vel=[7,5],size=(32,32)):
 		''
 		pig.sprite.Sprite.__init__(self)
@@ -82,6 +82,7 @@ class barril():
 		self.vel=vel
 		self.gravity=GRAVITY
 		self.gravityvel=0
+		self.onAir=False
 		self.img = pig.image.load('Barrel.png').convert_alpha()
 		self.img = pig.transform.scale(self.img,size)
 	def mover(self):
@@ -121,8 +122,8 @@ class barril():
 	def update(self,mapa):
 		''
 		self.mover()
-		self.colisiones(mapa)
 		self.gravedad()
+		self.colisiones(mapa)
 		screen.blit(self.img,(self.rect.left,self.rect.top))
 
 def mapRender(mapa):
@@ -132,10 +133,8 @@ def mapRender(mapa):
 			(plataforma[2],plataforma[3]+10),(plataforma[0],plataforma[1]+10)))	
 		
 barriles=[]
-dif=0
 
 barrelTiming=time.time()
-grav=1
 running=True
 while running:
 	for event in pig.event.get():
@@ -151,11 +150,11 @@ while running:
 		print(barriles)
 
 	for barr in barriles:#Update de todos los barriles
-		barr.update(mapa2)
+		barr.update(MapaDK1)
 		if barr.rect.right>=screenWidth and barr.rect.bottom>=screenHeight:
 			barr.alive=False
 
-	mapRender(mapa2)
+	mapRender(MapaDK1)
 	screen.blit(pig.transform.scale(pig.image.load('donkeyKong2.png'),(64,64)),(0,0))
 
 	pig.display.update()

@@ -5,7 +5,7 @@ from pygame.locals import *
 import random
 from Constantes import *
 from Colors import *
-from Mapa import *
+from Mapas import *
 
 pig.init()
 screenWidth=640+64*3#Utilizar de las Constantes
@@ -69,6 +69,7 @@ class barril():
 		self.vel=vel
 		self.gravity=GRAVITY
 		self.gravityvel=0
+		self.onAir=False
 		self.img = pig.image.load('Barrel.png').convert_alpha()
 		self.img = pig.transform.scale(self.img,size)
 	def mover(self):
@@ -108,8 +109,8 @@ class barril():
 	def update(self,mapa):
 		''
 		self.mover()
-		self.colisiones(mapa)
 		self.gravedad()
+		self.colisiones(mapa)
 		screen.blit(self.img,(self.rect.left,self.rect.top))
 
 		
@@ -121,7 +122,7 @@ def mapRender(mapa):
 
 barriles=[]
 
-for x in range(2):
+for x in range(10):
 	name='barril {0}'.format(x)
 	b=barril([random.uniform(150,200),random.uniform(10,15)],random.uniform(-20,20))
 	barriles.append(b)

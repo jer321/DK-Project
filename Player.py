@@ -1,10 +1,10 @@
-#Player.py
+__Author__='Juan Fernando Otoya'
 import pygame as pig
 from pygame.locals import *
-from Colors import *
 from Constantes import *
-from Mapa import *
+from Proyectil import *
 
+proyectiles=[]
 class Player2:
 	def __init__(self,pos=SCREEN_SIZE,vel=WALK_VEL,size=(45,62)):
 		'pos=posicion del jugador, vel=velocidad en x, salto'
@@ -16,7 +16,9 @@ class Player2:
 		self.state = None#Estado del jugador
 		self.onAir = True
 		self.canJump = False
-		self.canShot = False
+		self.upgraded = True#Cambiar a False para la mejora
+		self.canShot = True#Cambiar a False para la mejora y para cada cuanto disparar
+		self.canClimb= False
 		self.dead = False
 
 		self.rect = pig.Rect(SCREEN_SIZE[0]-self.size[0],SCREEN_SIZE[1]-self.size[1],self.size[0],self.size[1])
@@ -27,10 +29,21 @@ class Player2:
 		'comandos'
 		self.keys = pig.key.get_pressed()
 		#Salto
-		if self.keys[K_UP]:
+		if self.keys[K_SPACE]:
 			if self.canJump:
 				self.jump()
 		self.rect.centery+=self.jumpvel#Se suma too el tiempo la velocidad del salto. cuando se unde la tecla, esa velocidad cambia y cuando no se unde vale 0
+
+		if self.keys[K_UP]:
+			self.jump()
+			self.rect.centery+=self.jumpvel
+		if self.keys[K_DOWN]:
+			self.jump()
+			self.rect.centery+=20
+
+		if self.keys[K_b]:
+			if self.upgraded:
+				self.shoot()
 
 		if self.keys[K_RIGHT]:
 			self.dir='E'
@@ -38,11 +51,19 @@ class Player2:
 		elif self.keys[K_LEFT]:
 			self.dir='W'
 			self.rect.centerx-=self.walkvel
-		print(self.keys[K_UP])
 	def jump(self):
-		if self.onAir:
+		'Salto'
+		if self.onAir or self.state=='stair':
 			return
 		self.jumpvel=JUMP_VEL
+	def shoot(self):
+		'Agrega una "bala" a la lista de proyectiles que ha lanzado el jugador'
+		if self.canShot:
+			proyectiles.append(proyectil(self,(self.rect.left,self.rect.top+32)))
+
+	def stairs(self):
+		''
+
 
 	def grav(self):
 		if self.onAir:
@@ -52,7 +73,7 @@ class Player2:
 		if self.gravityVel+self.jumpvel>MAX_Y_VEL:
 			self.gravityVel=MAX_Y_VEL-self.jumpvel#Velocidad Maxima de caida Para que no traspace bloques del mapa
 		self.rect.centery+=self.gravityVel
-	def colisiones(self):
+	def colisiones(self, mapa):
 		if self.rect.left<0:
 			self.rect.left=0
 		elif self.rect.right>SCREEN_SIZE[0]:
@@ -60,17 +81,27 @@ class Player2:
 		if self.rect.bottom>SCREEN_SIZE[1]:
 			self.rect.bottom=SCREEN_SIZE[1]
 
-		for i in range(len(dimmapa)):
-			y=pendientes[i]*(self.rect.centerx-dimmapa[i][0])+dimmapa[i][1]
-			if y+10>self.rect.bottom>=y and dimmapa[i][2]>self.rect.centerx>dimmapa[i][0]:
+		for i in mapa:
+			pendiente=(i[3]-i[1])/(i[2]-i[0])
+			y=pendiente*(self.rect.centerx-i[0])+i[1]
+			if y+12>self.rect.bottom>=y and i[2]+2>self.rect.centerx>i[0]-2:#+2 para que no valla traspasar bloques
 				self.onAir=False
 				self.canJump=True
-				self.rect.bottom=y+2#+1 Para que siempre este adentro el rango y no genere problemas con si esta en el aire o no
+				self.rect.bottom=y+2#+2 Para que siempre este adentro del rango y no genere problemas con si esta en el aire o no
 				self.jumpvel=0
 				return
 
 		self.onAir=True
 		self.canJump=False
+	def laddersColisiones(self):
+		if 70+40>self.rect.centerx>70 and SCREEN_SIZE[1]>self.rect.bottom>SCREEN_SIZE[1]-75:
+			self.onAir=False
+			self.canJump=True
+			self.jumpvel=0
+			self.canClimb=True#Cuando escala la escalera
+			return None
+		self.canClimb=False
+
 	def loadImg(self):
 		if self.onAir:
 			if self.dir=='E':
@@ -89,13 +120,15 @@ class Player2:
 				self.img=pig.image.load('Character\c2\der1.png')
 			elif self.dir=='W':
 				self.img=pig.image.load('Character\c2\izq1.png')
+
+		if self.canClimb==True:
+			self.img=pig.image.load('Character\der1.png')
 		self.img=pig.transform.scale(self.img,(45,62))#Se Normaliza el tamano de la imagen escogida
 
-	def update(self):
+	def update(self, mapa):
 		self.cmd()
 		self.grav()
-		self.colisiones()
+		self.colisiones(mapa)
+		self.laddersColisiones()
 		self.loadImg()
-		screen.blit(self.img,(self.rect.left,self.rect.top))
-
-jonh=Player2()
+		#screen.blit(self.img,(self.rect.left,self.rect.top))

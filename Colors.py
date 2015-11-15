@@ -1,3 +1,4 @@
+__Author__='Juan Fernando Otoya'
 #Colors.py
 WHITE=255,255,255
 BLACK=0,0,0
