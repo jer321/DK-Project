@@ -3,6 +3,7 @@ import pygame as pig
 from pygame.locals import *
 from Constantes import *
 from Proyectil import *
+from Escaleras import *
 
 proyectiles=[]
 class Player2:
@@ -94,12 +95,14 @@ class Player2:
 		self.onAir=True
 		self.canJump=False
 	def laddersColisiones(self):
-		if 70+40>self.rect.centerx>70 and SCREEN_SIZE[1]>self.rect.bottom>SCREEN_SIZE[1]-75:
-			self.onAir=False
-			self.canJump=True
-			self.jumpvel=0
-			self.canClimb=True#Cuando escala la escalera
-			return None
+		for i in escaleras:
+			if i[2]>self.rect.centerx>i[0] and i[3]>self.rect.bottom>i[1]:
+			#if 70+40>self.rect.centerx>70 and SCREEN_SIZE[1]>self.rect.bottom>SCREEN_SIZE[1]-75:
+				self.onAir=False
+				self.canJump=True
+				self.jumpvel=0
+				self.canClimb=True#Cuando escala la escalera
+				return None
 		self.canClimb=False
 
 	def loadImg(self):

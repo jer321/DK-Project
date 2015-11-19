@@ -2,7 +2,9 @@ __Author__='Juan Fernando Otoya'
 #BarrilTest.py
 import pygame as pig
 from pygame.locals import *
+import random
 from Constantes import *
+from Escaleras import *
 
 class barril():
 	def __init__(self,pos=(0,0),vel=5,size=(32,32)):
@@ -37,6 +39,13 @@ class barril():
 				return None
 		self.onAir=True
 
+	def laddersColisiones(self):
+		'Checkea las escaleras'
+		a=random.randint(0,1)
+		for i in escaleras:
+			if i[2]>self.rect.centerx>i[0] and i[3]-(i[3]-i[1])>self.rect.bottom>i[1]-(i[3]-i[1]):
+				self.rect.centery+=15
+				print('si')
 	def gravedad(self):
 		''
 		if self.onAir:
@@ -53,4 +62,5 @@ class barril():
 		self.gravedad()
 		self.mover()
 		self.colisiones(mapa)
+		self.laddersColisiones()
 		#screen.blit(self.img,(self.rect.left,self.rect.top))

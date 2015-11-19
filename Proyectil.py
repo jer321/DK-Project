@@ -3,7 +3,6 @@ __Author__='Juan Fernando Otoya'
 import pygame as pig
 from pygame.locals import *
 from Constantes import *
-
 class proyectil():
 	def __init__(self,player=None,pos=(0,0),vel=20,size=(10,10)):
 		self.img=pig.image.load('Shot.png')

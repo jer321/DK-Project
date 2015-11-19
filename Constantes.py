@@ -21,8 +21,8 @@ JUMP = 'jump'
 FALL = 'fall'
 
 #Cosas Extra
-LEFT = 'left'
-RIGHT = 'right'
+LEFT = 'W'
+RIGHT = 'E'
 JUMPED_ON = 'jumped on'
 DEATH_JUMP = 'death jump'
 
