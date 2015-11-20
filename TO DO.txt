@@ -1,0 +1,6 @@
+Hacer puntaje
+si se acaba el tiempo se muere
+
+PowerUP
+Poder matar los barriles
+que los barriles maten al personaje
