@@ -16,3 +16,12 @@ Boss (Donkey Kong): Del Boss salen los barriles. El objetivo del jugador es derr
 
 
 la razon por la que he preferido utilizar pygame sobre otras librerias es porque tiene una clase especial llamada "sprite" que simplifica la interaccion entre cualquier elemento grafico añadido.
+
+
+Controles:
+espacio: Saltar
+tecla arriba: Subir Escaleras
+tecla abajo: Bajar Escaleras
+tecla izquierda: Moverse hacia la izquierda
+tecla derecha: Moverse hacia la derecha
+b: Disparar

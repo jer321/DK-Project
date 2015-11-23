@@ -13,14 +13,16 @@ class Player2:
 		self.walkvel = vel
 		self.size = size
 		self.gravityVel = 0
+		self.score=0
 
 		self.state = None#Estado del jugador
-		self.onAir = True
-		self.canJump = False
-		self.upgraded = True#Cambiar a False para la mejora
-		self.canShot = True#Cambiar a False para la mejora y para cada cuanto disparar
-		self.canClimb= False
-		self.dead = False
+		self.onAir = True #Cuando esta callendo
+		self.canJump = False #Cuando puede saltar
+		self.upgraded = False #Cambiar a False para la mejora
+		self.canShot = True #Cambiar a False para la mejora y para cada cuanto disparar
+		self.canClimb= False #Cuando puede subir escaleras
+		self.dead = False #Cuando Muere
+		self.win = False #Cuando salva a la princesa
 
 		self.rect = pig.Rect(SCREEN_SIZE[0]-self.size[0],SCREEN_SIZE[1]-self.size[1],self.size[0],self.size[1])
 		self.dir = 'E'#Direccion del jugador(W,E)
@@ -35,16 +37,16 @@ class Player2:
 				self.jump()
 		self.rect.centery+=self.jumpvel#Se suma too el tiempo la velocidad del salto. cuando se unde la tecla, esa velocidad cambia y cuando no se unde vale 0
 
-		if self.keys[K_UP]:
-			self.jump()
-			self.rect.centery+=self.jumpvel
-		if self.keys[K_DOWN]:
-			self.jump()
+		if self.keys[K_DOWN]:# and self.laddersColisiones():
 			self.rect.centery+=20
 
+
 		if self.keys[K_b]:
-			if self.upgraded:
+			if self.upgraded:#Si ha conseguido la mejora
 				self.shoot()
+				self.canShot=False#El self.canShot hace que no se sigan disparando las balas cuando se deja undido el boton
+		else:
+			self.canShot=True
 
 		if self.keys[K_RIGHT]:
 			self.dir='E'
@@ -54,17 +56,13 @@ class Player2:
 			self.rect.centerx-=self.walkvel
 	def jump(self):
 		'Salto'
-		if self.onAir or self.state=='stair':
+		if self.onAir:
 			return
 		self.jumpvel=JUMP_VEL
 	def shoot(self):
 		'Agrega una "bala" a la lista de proyectiles que ha lanzado el jugador'
 		if self.canShot:
 			proyectiles.append(proyectil(self,(self.rect.left,self.rect.top+32)))
-
-	def stairs(self):
-		''
-
 
 	def grav(self):
 		if self.onAir:
@@ -75,35 +73,38 @@ class Player2:
 			self.gravityVel=MAX_Y_VEL-self.jumpvel#Velocidad Maxima de caida Para que no traspace bloques del mapa
 		self.rect.centery+=self.gravityVel
 	def colisiones(self, mapa):
-		if self.rect.left<0:
-			self.rect.left=0
-		elif self.rect.right>SCREEN_SIZE[0]:
-			self.rect.right=SCREEN_SIZE[0]
-		if self.rect.bottom>SCREEN_SIZE[1]:
-			self.rect.bottom=SCREEN_SIZE[1]
+		if not self.state=='stair':
+			if self.rect.left<0:
+				self.rect.left=0
+			elif self.rect.right>SCREEN_SIZE[0]:
+				self.rect.right=SCREEN_SIZE[0]
+			if self.rect.bottom>SCREEN_SIZE[1]:
+				self.rect.bottom=SCREEN_SIZE[1]
 
-		for i in mapa:
-			pendiente=(i[3]-i[1])/(i[2]-i[0])
-			y=pendiente*(self.rect.centerx-i[0])+i[1]
-			if y+12>self.rect.bottom>=y and i[2]+2>self.rect.centerx>i[0]-2:#+2 para que no valla traspasar bloques
-				self.onAir=False
-				self.canJump=True
-				self.rect.bottom=y+2#+2 Para que siempre este adentro del rango y no genere problemas con si esta en el aire o no
-				self.jumpvel=0
-				return
+			for i in mapa:
+				pendiente=(i[3]-i[1])/(i[2]-i[0])
+				y=pendiente*(self.rect.centerx-i[0])+i[1]
+				if y+12>self.rect.bottom>=y and i[2]+2>self.rect.centerx>i[0]-2:#+2 para que no valla traspasar bloques
+					self.onAir=False
+					self.canJump=True
+					self.rect.bottom=y+2#+2 Para que siempre este adentro del rango y no genere problemas con si esta en el aire o no
+					self.jumpvel=0
+					return
 
-		self.onAir=True
-		self.canJump=False
-	def laddersColisiones(self):
-		for i in escaleras:
+			self.onAir=True
+			self.canJump=False
+	def laddersColisiones(self,stairs):
+		for i in stairs:
 			if i[2]>self.rect.centerx>i[0] and i[3]>self.rect.bottom>i[1]:
 			#if 70+40>self.rect.centerx>70 and SCREEN_SIZE[1]>self.rect.bottom>SCREEN_SIZE[1]-75:
 				self.onAir=False
 				self.canJump=True
 				self.jumpvel=0
 				self.canClimb=True#Cuando escala la escalera
-				return None
+				self.state='stair'
+				return True
 		self.canClimb=False
+		self.state=None
 
 	def loadImg(self):
 		if self.onAir:
@@ -125,13 +126,13 @@ class Player2:
 				self.img=pig.image.load('Character\c2\izq1.png')
 
 		if self.canClimb==True:
-			self.img=pig.image.load('Character\der1.png')
+			self.img=pig.image.load('Character\c2\stair1.png')
 		self.img=pig.transform.scale(self.img,(45,62))#Se Normaliza el tamano de la imagen escogida
 
-	def update(self, mapa):
+	def update(self, mapa, stairs):
 		self.cmd()
 		self.grav()
 		self.colisiones(mapa)
-		self.laddersColisiones()
+		self.laddersColisiones(stairs)
 		self.loadImg()
 		#screen.blit(self.img,(self.rect.left,self.rect.top))
