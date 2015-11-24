@@ -220,6 +220,7 @@ while running:
 	jugador2.rect.left,jugador2.rect.centery=0,520
 	mejora.rect.left,mejora.rect.centery=80,380
 	princesa.rect.left,princesa.rect.bottom=270,120
+	jugador2.win=True
 	while not jugador2.win:
 		for event in pig.event.get():
 			if event.type==QUIT or (event.type==KEYDOWN and event.key==K_ESCAPE):
@@ -282,7 +283,7 @@ while running:
 		#Fondo de Pantalla
 		screen.blit(background,(0,0))
 		#Mapa
-		mapRender(screen,MapaDK2,escaleras2,jugador2,mejora,princesa,barriles,(120,20),'Mapa2.png')
+		mapRender(screen,MapaDK2,escaleras2,jugador2,mejora,princesa,barriles,(120,20),os.path.join('IMG','Mapa2.png'))
 		#Textos
 		texto(jugador2,txtname)
 
