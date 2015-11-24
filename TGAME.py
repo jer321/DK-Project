@@ -86,21 +86,21 @@ def update(screen,mapa,stairs,player,powerup,princess,entreBarriles,barrelInitPo
 		player.score+=10000
 
 
-def texto(player,name):
+def texto(player,name,tiempo):
 	'renderiza los textos en la pantalla'
 	#El tiempo transcurrido del juego mostrado en pantalla
 	fuenteDeTexto=pig.font.Font('freesansbold.ttf', 32)
 	tiempoTranscurrido=120-int(pig.time.get_ticks()/1000)-gettime
 
-	tiempo=fuenteDeTexto.render(str(tiempoTranscurrido), True, BLACK,)#el True es para el Anti-Aliased (alisado)
+	tiempo=fuenteDeTexto.render(str(int(tiempo)), True, BLACK,)#el True es para el Anti-Aliased (alisado)
 	txt1=fuenteDeTexto.render(str(name), True, BLACK,)
 	txt2=fuenteDeTexto.render('Score:', True, BLACK,)
 	txt3=fuenteDeTexto.render('Time:', True, BLACK,)
 	score=fuenteDeTexto.render(str(player.score), True, BLACK,)#CAMBIAR!!!!!!
 
 	screen.blit(txt1, (5,0))
-	screen.blit(txt2, (5,32))
 	screen.blit(txt2, (5,64))
+	screen.blit(txt3, (5,32))
 	screen.blit(tiempo, (110,32))
 	screen.blit(score, (110,64))
 
@@ -220,6 +220,7 @@ while running:
 	jugador2.rect.left,jugador2.rect.centery=0,520
 	mejora.rect.left,mejora.rect.centery=80,380
 	princesa.rect.left,princesa.rect.bottom=270,120
+	tiempo=30
 	while not jugador2.win:
 		for event in pig.event.get():
 			if event.type==QUIT or (event.type==KEYDOWN and event.key==K_ESCAPE):
@@ -234,14 +235,16 @@ while running:
 		#Mapa
 		mapRender(screen,MapaDK1,escaleras1,jugador2,mejora,princesa,barriles,(120,50),os.path.join('IMG','Grass1_2.png'))
 		#Textos
-		texto(jugador2,txtname)
+		texto(jugador2,txtname,tiempo)
+		#Tiempo
+		tiempo-=1/FPS
 
 		#screen.blit(textoPantallaj, (0,0))
 		pig.display.update()
 		clock.tick(FPS)#Utilizar Constantes
 
 		#GAME OVER
-		while jugador2.dead:
+		while (jugador2.dead or tiempo<0):
 			for event in pig.event.get():
 				if event.type==QUIT or (event.type==KEYDOWN and event.key==K_ESCAPE):
 					running=False
@@ -251,6 +254,12 @@ while running:
 					jugador2.dead=False
 					jugador2.rect.left,jugador2.rect.centery=0,520
 					barriles=[]
+					jugador2.upgraded=False
+					mejora.show=True
+					tiempo=30
+					jugador2.score-=1000
+					if jugador2.score<0:
+						jugador2.score=0
 
 
 			screen.fill(BLACK)
@@ -260,10 +269,12 @@ while running:
 			ask2=fuenteDeTexto2.render(txtname+' Has perdido', True, WHITE,)
 			txtcoso=fuenteDeTexto2.render('Tu puntuacion es de:', True, WHITE,)
 			txtcoso2=fuenteDeTexto2.render(str(jugador2.score), True, WHITE,)
-			screen.blit(ask1, (120,140))
+			txtcoso3=fuenteDeTexto2.render('"Enter" para reiniciar Nivel (score - 1000)', True, WHITE,)
+			screen.blit(ask1, (100,140))
 			screen.blit(ask2, (150,250))
 			screen.blit(txtcoso, (100,300))
 			screen.blit(txtcoso2, (500,300))
+			screen.blit(txtcoso3, (100,400))
 			pig.display.update()
 
 
@@ -272,9 +283,10 @@ while running:
 	jugador2.upgraded=False
 	mejora.show=True
 	barriles=[]
-	jugador2.rect.left,jugador2.rect.centery=0,520
+	jugador2.rect.left,jugador2.rect.centery=0,600
 	mejora.rect.left,mejora.rect.centery=80,270
 	princesa.rect.left,princesa.rect.bottom=270+20,120+10
+	tiempo=50
 	while not jugador2.win:
 		for event in pig.event.get():
 			if event.type==QUIT or (event.type==KEYDOWN and event.key==K_ESCAPE):
@@ -289,22 +301,30 @@ while running:
 		#Mapa
 		mapRender(screen,MapaDK2,escaleras2,jugador2,mejora,princesa,barriles,(120,20),os.path.join('IMG','Mapa2.png'))
 		#Textos
-		texto(jugador2,txtname)
+		texto(jugador2,txtname,tiempo)
+		#Tiempo
+		tiempo-=1/FPS
 
 		#screen.blit(textoPantallaj, (0,0))
 		pig.display.update()
 		clock.tick(FPS)#Utilizar Constantes
 
 		#GAME OVER
-		while jugador2.dead:
+		while (jugador2.dead or tiempo<0):
 			for event in pig.event.get():
 				if event.type==QUIT or (event.type==KEYDOWN and event.key==K_ESCAPE):
 					running=False
 					pig.quit()
 				if event.type==KEYDOWN and event.key==K_RETURN:
 						jugador2.dead=False
-						jugador2.rect.left,jugador2.rect.centery=0,520
+						jugador2.rect.left,jugador2.rect.centery=0,600
 						barriles=[]
+						jugador2.upgraded=False
+						mejora.show=True
+						tiempo=50
+						jugador2.score-=1000
+						if jugador2.score<0:
+							jugador2.score=0
 
 			playlevel=False
 			screen.fill(BLACK)
@@ -314,10 +334,12 @@ while running:
 			ask2=fuenteDeTexto2.render(txtname+' Has perdido', True, WHITE,)
 			txtcoso=fuenteDeTexto2.render('Tu puntuacion es de:', True, WHITE,)
 			txtcoso2=fuenteDeTexto2.render(str(jugador2.score), True, WHITE,)
-			screen.blit(ask1, (120,140))
-			screen.blit(ask2, (150,250))
+			txtcoso3=fuenteDeTexto2.render('"Enter" para reiniciar Nivel (score - 1000)', True, WHITE,)
+			screen.blit(ask1, (100,140))
+			screen.blit(ask2, (100,250))
 			screen.blit(txtcoso, (100,300))
 			screen.blit(txtcoso2, (500,300))
+			screen.blit(txtcoso3, (100,400))
 			pig.display.update()
 
 
