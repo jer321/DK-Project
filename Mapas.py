@@ -7,6 +7,7 @@ heightdif=int(SCREEN_SIZE[1]/7)
 widthdif=int(SCREEN_SIZE[0]/8)
 
 #X0,  y0,        x1,          y1
+#Cada tuple es un conjunto de dos puntos que forman una linea x1,y1,x2,y2
 dimmapa=\
 (0,SCREEN_SIZE[1],SCREEN_SIZE[0],SCREEN_SIZE[1]),\
 (50,SCREEN_SIZE[1],150,SCREEN_SIZE[1]-120),\
@@ -63,5 +64,3 @@ MapaDK2=\
 (30,300,130,300),\
 (30,440,130,440),\
 (30,550,130,550),\
-
-

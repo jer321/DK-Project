@@ -5,7 +5,7 @@ from pygame.locals import *
 from Constantes import *
 class proyectil():
 	def __init__(self,player=None,pos=(0,0),vel=20,size=(10,10)):
-		self.img=pig.image.load('Shot.png')
+		self.img=pig.image.load(os.path.join('IMG','Character','Shot.png'))
 		self.img=pig.transform.scale(self.img,size)
 		self.rect=pig.Rect(pos,size)
 		self.vel=vel

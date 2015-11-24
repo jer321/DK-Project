@@ -2,8 +2,9 @@
 __Author__='Juan Fernando Otoya'
 import pygame as pig
 from Constantes import *
+import os
 
-escaleraImg=pig.image.load('Escalera.png')
+escaleraImg=pig.image.load(os.path.join('IMG','Escalera.png'))
 escaleras1=\
 (790,200,820,240),\
 (140,290,170,330),\

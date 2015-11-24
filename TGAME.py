@@ -14,6 +14,8 @@ from Player import *
 from Powerup import *
 from Princess import *
 from Barril import *
+import os
+#Utilizo "os" para poder correrlo en otro sistema operativo. no se en cual lo vas a correr antal :D
 
 
 def mapRender(screen,mapa,stairs,player,powerup,princess,barrelList,dkpos,mapimg):
@@ -79,7 +81,7 @@ def update(screen,mapa,stairs,player,powerup,princess,entreBarriles,barrelInitPo
 		barr.update(mapa,stairs,player)
 
 	if player.win:
-		print('si')
+		#Si toca a la princesa win=True
 		playlevel=False
 		player.score+=10000
 
@@ -115,16 +117,16 @@ jugador2=Player2()
 mejora=powerup()
 princesa=princesa()
 
-barriles=[]
-barrelTiming=time.time()
+barriles=[]#Lista de los barriles en juego
+barrelTiming=time.time()#tiempo para hacer cada cuanto se agregan barriles a la lista
 
-#__main__
+
 running=True
-background=pig.image.load('background.png').convert_alpha()#utilizar Constantes
+background=pig.image.load(os.path.join('IMG','background.png')).convert_alpha()#utilizar Constantes
 background=pig.transform.scale(background,(SCREEN_SIZE[0],screensize[1]))
-grass=pig.image.load('Grass1_2.png').convert_alpha()#utilizar Constantes
+grass=pig.image.load(os.path.join('IMG','Grass1_2.png')).convert_alpha()#utilizar Constantes
 grass=pig.transform.scale(grass,(SCREEN_SIZE[0],screensize[1]))
-dkimg=pig.image.load('donkeyKong2.png')
+dkimg=pig.image.load(os.path.join('IMG','donkeyKong2.png'))
 dkimg=pig.transform.scale(dkimg,(128,128))
 
 
@@ -133,6 +135,8 @@ txtname=''
 while running:
 
 	#Escoger nombre de personaje
+	#dependiendo de la tecla que se unda se agrega la letra a "txtname"
+	#para borrar txtname=txtname[:-1] lo que quiere decir que no toma el ultimo caracter. esto sucede cada vez que presionamos la tecla de borrar
 	while notname:
 		for event in pig.event.get():
 			if event.type==QUIT or (event.type==KEYDOWN and event.key==K_ESCAPE):
@@ -228,7 +232,7 @@ while running:
 		#Fondo de Pantalla
 		screen.blit(background,(0,0))
 		#Mapa
-		mapRender(screen,MapaDK1,escaleras1,jugador2,mejora,princesa,barriles,(120,50),'Grass1_2.png')
+		mapRender(screen,MapaDK1,escaleras1,jugador2,mejora,princesa,barriles,(120,50),os.path.join('IMG','Grass1_2.png'))
 		#Textos
 		texto(jugador2,txtname)
 
