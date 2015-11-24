@@ -1,7 +1,7 @@
 #Escaleras.py
 __Author__='Juan Fernando Otoya'
 import pygame as pig
-from Constantes import *
+from DATA.Constantes import *
 import os
 
 escaleraImg=pig.image.load(os.path.join('IMG','Escalera.png'))

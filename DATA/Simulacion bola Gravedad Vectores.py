@@ -3,9 +3,9 @@ __Author__='Juan Fernando Otoya'
 import pygame as pig
 from pygame.locals import *
 import random
-from Constantes import *
-from Colors import *
-from Mapas import *
+from DATA.Constantes import *
+from DATA.Colors import *
+from DATA.Mapas import *
 
 pig.init()
 screenWidth=640+64*3#Utilizar de las Constantes

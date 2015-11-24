@@ -6,14 +6,14 @@ import pygame as pig
 from pygame.locals import *
 import time
 import random
-from Colors import *
-from Constantes import *
-from Mapas import *
-from Escaleras import *
-from Player import *
-from Powerup import *
-from Princess import *
-from Barril import *
+from DATA.Colors import *
+from DATA.Constantes import *
+from DATA.Mapas import *
+from DATA.Escaleras import *
+from DATA.Player import *
+from DATA.Powerup import *
+from DATA.Princess import *
+from DATA.Barril import *
 import os
 #Utilizo "os" para poder correrlo en otro sistema operativo. no se en cual lo vas a correr antal :D
 
@@ -220,7 +220,6 @@ while running:
 	jugador2.rect.left,jugador2.rect.centery=0,520
 	mejora.rect.left,mejora.rect.centery=80,380
 	princesa.rect.left,princesa.rect.bottom=270,120
-	jugador2.win=True
 	while not jugador2.win:
 		for event in pig.event.get():
 			if event.type==QUIT or (event.type==KEYDOWN and event.key==K_ESCAPE):

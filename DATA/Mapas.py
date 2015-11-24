@@ -1,7 +1,7 @@
 __Author__='Juan Fernando Otoya'
 #Mapa.py
 import pygame as pig
-from Constantes import *
+from DATA.Constantes import *
 
 heightdif=int(SCREEN_SIZE[1]/7)
 widthdif=int(SCREEN_SIZE[0]/8)

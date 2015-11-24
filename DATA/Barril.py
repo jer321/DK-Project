@@ -3,8 +3,8 @@ __Author__='Juan Fernando Otoya'
 import pygame as pig
 from pygame.locals import *
 import random
-from Constantes import *
-from Escaleras import *
+from DATA.Constantes import *
+from DATA.Escaleras import *
 import os
 
 class barril():

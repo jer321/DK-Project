@@ -3,9 +3,9 @@ __Author__='Juan Fernando Otoya'
 import pygame as pig
 from pygame.locals import *
 import random
-from Constantes import *
-from Mapas import *
-from Colors import *
+from DATA.Constantes import *
+from DATA.Mapas import *
+from DATA.Colors import *
 import time
 
 pig.init()

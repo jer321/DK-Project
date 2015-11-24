@@ -1,9 +1,9 @@
 __Author__='Juan Fernando Otoya'
 import pygame as pig
 from pygame.locals import *
-from Constantes import *
-from Proyectil import *
-from Escaleras import *
+from DATA.Constantes import *
+from DATA.Proyectil import *
+from DATA.Escaleras import *
 import os
 
 proyectiles=[]
