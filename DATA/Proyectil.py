@@ -3,9 +3,10 @@ __Author__='Juan Fernando Otoya'
 import pygame as pig
 from pygame.locals import *
 from DATA.Constantes import *
+import os
 class proyectil():
 	def __init__(self,player=None,pos=(0,0),vel=20,size=(10,10)):
-		self.img=pig.image.load(os.path.join('IMG','Character','Shot.png'))
+		self.img=pig.image.load(os.path.join('IMG','Shot.png'))
 		self.img=pig.transform.scale(self.img,size)
 		self.rect=pig.Rect(pos,size)
 		self.vel=vel

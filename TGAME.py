@@ -246,6 +246,11 @@ while running:
 				if event.type==QUIT or (event.type==KEYDOWN and event.key==K_ESCAPE):
 					running=False
 					pig.quit()
+				#Presionar la tecla Enter para resetear el nivel si se muere
+				if event.type==KEYDOWN and event.key==K_RETURN:
+					jugador2.dead=False
+					jugador2.rect.left,jugador2.rect.centery=0,520
+					barriles=[]
 
 
 			screen.fill(BLACK)
@@ -290,11 +295,16 @@ while running:
 		pig.display.update()
 		clock.tick(FPS)#Utilizar Constantes
 
+		#GAME OVER
 		while jugador2.dead:
 			for event in pig.event.get():
 				if event.type==QUIT or (event.type==KEYDOWN and event.key==K_ESCAPE):
 					running=False
 					pig.quit()
+				if event.type==KEYDOWN and event.key==K_RETURN:
+						jugador2.dead=False
+						jugador2.rect.left,jugador2.rect.centery=0,520
+						barriles=[]
 
 			playlevel=False
 			screen.fill(BLACK)
